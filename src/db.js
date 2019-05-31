@@ -8,3 +8,5 @@ const db = new Prisma({
   secret: process.env.PRISMA_SECRET,
   debug: true
 });
+
+module.exports = db;
