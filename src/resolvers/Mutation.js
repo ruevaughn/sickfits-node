@@ -10,10 +10,22 @@ const Mutations = {
       },
       info
     );
-
-    console.log(item);
-
     return item;
+  },
+
+  async updateItem(parent, args, ctx, info) {
+    const updates = { ...args };
+    delete updates.id;
+    // Because we're returning this promise based function, it will wait the update to pass.
+    return ctx.db.mutation.updateItem(
+      {
+        data: updates,
+        where: {
+          id: args.id
+        }
+      },
+      info
+    );
   }
 };
 
