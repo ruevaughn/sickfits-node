@@ -1,3 +1,4 @@
 const YEAR_IN_SECONDS = 1000 * 60 * 60 * 24 * 365;
+const HOUR_IN_SECONDS = 3600000;
 
-module.exports = { YEAR_IN_SECONDS };
+module.exports = { YEAR_IN_SECONDS, HOUR_IN_SECONDS };
