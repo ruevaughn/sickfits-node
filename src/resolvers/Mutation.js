@@ -113,7 +113,7 @@ const Mutations = {
     const randomByesPromisified = promisify(randomBytes);
     const resetToken = (await randomByesPromisified(20)).toString("hex");
     const resetTokenExpiry = Date.now() + HOUR_IN_SECONDS;
-    const res = await ctx.db.mutation.updateUser({
+    await ctx.db.mutation.updateUser({
       where: { email },
       data: {
         resetToken,
