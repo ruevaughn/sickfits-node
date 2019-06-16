@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const { generateToken, hashPassword } = require("../../utils/auth");
 const { YEAR_IN_SECONDS, HOUR_IN_SECONDS } = require("../../utils/constants");
 const { promisify } = require("util");
+const { transport, makeANiceEmail } = require("../../mail");
 
 const Mutations = {
   async createItem(parent, args, ctx, info) {
@@ -120,9 +121,18 @@ const Mutations = {
         resetTokenExpiry
       }
     });
-    return { message: "Password reset successfully initiated" };
 
     // 3. Email that reset token
+    const mailRes = await transport.sendMail({
+      from: "chase@chasejensen.com",
+      to: user.email,
+      html: makeANiceEmail(`Your password reset Link is here: \n\n
+      <a href="${process.env.FRONTEND_URL}/reset?resetToken=${resetToken}">
+      Click Here to Reset</a>
+      `)
+    });
+
+    return { message: "Password reset successfully initiated" };
   },
 
   async resetPassword(parent, { resetToken, password, confirmPassword }, ctx, info) {
