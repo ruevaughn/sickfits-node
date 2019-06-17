@@ -9,4 +9,12 @@ const hashPassword = async password => {
   return bcrypt.hash(password, 10);
 };
 
-module.exports = { generateToken, hashPassword };
+const isLoggedIn = req => {
+  return req.userId ? true : false;
+};
+
+module.exports = {
+  generateToken,
+  hashPassword,
+  isLoggedIn
+};
