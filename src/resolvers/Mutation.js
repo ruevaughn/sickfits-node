@@ -8,10 +8,19 @@ const { transport, makeANiceEmail } = require("../../mail");
 const Mutations = {
   async createItem(parent, args, ctx, info) {
     // TODO: Check if they are logged in
+    // Logged in means that there is a valid toke nset?
+    if (!ctx.request.userId) {
+      throw new Error("You must be logged in to perform this action.");
+    }
 
     const item = await ctx.db.mutation.createItem(
       {
         data: {
+          user: {
+            connect: {
+              id: ctx.request.userId
+            }
+          },
           ...args
         }
       },
