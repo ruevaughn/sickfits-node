@@ -104,7 +104,7 @@ const Mutations = {
       maxAge: YEAR_IN_SECONDS
     });
 
-    // 5. Return the user
+    // 6. Return the user
     return user;
   },
 
