@@ -4,6 +4,7 @@ const { generateToken, hashPassword } = require("../../utils/auth");
 const { YEAR_IN_SECONDS, HOUR_IN_SECONDS } = require("../../utils/constants");
 const { promisify } = require("util");
 const { transport, makeANiceEmail } = require("../../mail");
+const { hasPermission } = require("../..//utils/permissions");
 
 const Mutations = {
   async createItem(parent, args, ctx, info) {
@@ -185,6 +186,39 @@ const Mutations = {
 
     // 8. Return the new user
     return user;
+  },
+
+  async updatePermissions(parent, args, ctx, info) {
+    // 1. Check if they are logged in
+    if (!ctx.request.userId) {
+      throw new Error("You need to be logged in");
+    }
+    // 2. Query the current user
+    const currentUser = await ctx.db.query.user(
+      {
+        where: {
+          id: ctx.request.userId
+        },
+        info
+      },
+      `{ id, permissions, email, name}`
+    );
+    // 3. Check if the user has permissions
+    hasPermission(currentUser, ["ADMIN", "PERMISSIONUPDATE"]);
+    // 4. Update the permissions
+    return ctx.db.mutation.updateUser(
+      {
+        data: {
+          permissions: {
+            set: args.permissions
+          }
+        },
+        where: {
+          id: args.userId
+        }
+      },
+      info
+    );
   }
 };
 
